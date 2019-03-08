@@ -1,0 +1,138 @@
+<!doctype html>
+<html class="no-js" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>Hello Amaze UI</title>
+
+    <!-- Set render engine for 360 browser -->
+    <meta name="renderer" content="webkit">
+
+    <!-- No Baidu Siteapp-->
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+
+    <link rel="icon" type="image/png" href="/i/favicon.png">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="/i/app-icon72x72@2x.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Amaze UI"/>
+    <link rel="apple-touch-icon-precomposed" href="/i/app-icon72x72@2x.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="/i/app-icon72x72@2x.png">
+    <meta name="msapplication-TileColor" content="#0e90d2">
+
+    <link rel="stylesheet" href="/css/amazeui.min.css">
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<p>
+    Hello Amaze UI.
+</p>
+
+<!--在这里编写你的代码-->
+
+<form action="" class="am-form" data-am-validator>
+    <fieldset>
+        <legend>JS 表单验证</legend>
+        <div class="am-form-group">
+            <label for="doc-vld-name-2">Service：</label>
+            <input type="text" id="doc-vld-name-2" minlength="3" placeholder="输入用户名（至少 3 个字符）" required />
+        </div>
+
+        <div class="am-form-group">
+            <label for="doc-vld-email-2">Version：</label>
+            <input type="email" id="doc-vld-email-2" placeholder="输入邮箱" required/>
+        </div>
+
+        <div class="am-form-group">
+            <label for="doc-vld-url-2">网址：</label>
+            <input type="url" id="doc-vld-url-2" placeholder="输入网址" required/>
+        </div>
+
+        <div class="am-form-group">
+            <label for="doc-vld-age-2">年龄：</label>
+            <input type="number" class=""  id="doc-vld-age-2" placeholder="输入年龄  18-120" min="18" max="120" required />
+        </div>
+
+        <div class="am-form-group">
+            <label class="am-form-label">爱好：</label>
+            <label class="am-checkbox-inline">
+                <input type="checkbox" value="橘子" name="docVlCb" minchecked="2" maxchecked="4" required> 橘子
+            </label>
+            <label class="am-checkbox-inline">
+                <input type="checkbox" value="苹果" name="docVlCb"> 苹果
+            </label>
+            <label class="am-checkbox-inline">
+                <input type="checkbox" value="菠萝" name="docVlCb"> 菠萝
+            </label>
+            <label class="am-checkbox-inline">
+                <input type="checkbox" value="芒果" name="docVlCb"> 芒果
+            </label>
+            <label class="am-checkbox-inline">
+                <input type="checkbox" value="香蕉" name="docVlCb"> 香蕉
+            </label>
+        </div>
+
+        <div class="am-form-group">
+            <label>性别： </label>
+            <label class="am-radio-inline">
+                <input type="radio"  value="" name="docVlGender" required> 男
+            </label>
+            <label class="am-radio-inline">
+                <input type="radio" name="docVlGender"> 女
+            </label>
+            <label class="am-radio-inline">
+                <input type="radio" name="docVlGender"> 其他
+            </label>
+        </div>
+
+        <div class="am-form-group">
+            <label for="doc-select-1">下拉单选框</label>
+            <select id="doc-select-1" required>
+                <option value="">-=请选择一项=-</option>
+                <option value="option1">选项一...</option>
+                <option value="option2">选项二.....</option>
+                <option value="option3">选项三........</option>
+            </select>
+            <span class="am-form-caret"></span>
+        </div>
+
+        <div class="am-form-group">
+            <label for="doc-select-2">多选框</label>
+            <select multiple class="" id="doc-select-2" minchecked="2" maxchecked="4">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+        </div>
+
+        <div class="am-form-group">
+            <label for="doc-vld-ta-2">评论：</label>
+            <textarea id="doc-vld-ta-2" minlength="10" maxlength="100"></textarea>
+        </div>
+
+        <button class="am-btn am-btn-secondary" type="submit">提交</button>
+    </fieldset>
+</form>
+
+<!--<button id="app" v-on:click="sending" type="button" class="am-btn am-btn-primary btn-loading-example">Button</button>-->
+
+<!--<script src="https://unpkg.com/axios/dist/axios.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+<script src="/js/amazeui.min.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
