@@ -34,7 +34,10 @@ public class Collector implements Runnable {
         for (Element element : href) {
             String link = element.attr("href").trim();
             if (link.startsWith("http")) {
-                links.offer(link);
+                if (linkFilter.mightContain(link)) { //布隆过滤器判重
+                    links.offer(link);  //加入待爬取队列
+                    linkFilter.put(link);   //加入过滤器
+                }
             }
         }
     }
