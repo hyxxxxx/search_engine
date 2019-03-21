@@ -2,6 +2,7 @@ package com.dbc.exert.collect;
 
 import com.dbc.exert.ConfigUtil;
 import com.dbc.exert.model.IDProvider;
+import com.dbc.exert.model.Link;
 import com.dbc.exert.net.HttpHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -36,6 +37,7 @@ public class LocalCollector extends Collector {
         this.link = url;
         String htmlStr = "";
         try {
+            log.info("爬取URL -> {}", url);
             htmlStr = HttpHelper.sendGet(url);
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,36 +66,34 @@ public class LocalCollector extends Collector {
     }
 
     @Override
-    void persistHtml(String html) {
+    void persistHtml(String html) throws IOException {
         if (StringUtils.isEmpty(html)) {
             return;
         }
-        long htmlId = IDProvider.newWebId();
+        String htmlId = IDProvider.generateId();
         int docId = IDProvider.docId();
-        try {
-            String root = ConfigUtil.getValueStr("root");
-            Path doc_raw = Paths.get(root + "doc_raw_" + docId + ".bin");
-            Path doc_id = Paths.get(root + "doc_id.bin");
-            if (!Files.exists(doc_raw)) {
-                Files.createFile(doc_raw);
-            }
-            if (!Files.exists(doc_id)) {
-                Files.createFile(doc_id);
-            }
-            try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(doc_raw, StandardOpenOption.APPEND))) {
-                StringBuffer buffer = new StringBuffer();
-                buffer.append(htmlId).append("\t").append(html.getBytes(Charset.defaultCharset()).length).append("\t").append(html);
-                writer.println(buffer);
-            }
-            try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(doc_id, StandardOpenOption.APPEND))) {
-                StringBuffer buffer = new StringBuffer();
-                buffer.append(htmlId).append("\t").append(link);
-                writer.println(buffer);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        String root = ConfigUtil.getValueStr("root");
+        String docRawPath = root + "doc_raw_" + docId + ".bin";
+        Path doc_raw = Paths.get(docRawPath);
+        Path doc_id = Paths.get(root + "doc_id.bin");
+        int pageSize = html.getBytes(Charset.defaultCharset()).length;
+        if (!Files.exists(doc_raw)) {
+            Files.createFile(doc_raw);
         }
+        if (!Files.exists(doc_id)) {
+            Files.createFile(doc_id);
+        }
+        try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(doc_raw, StandardOpenOption.APPEND))) {
+            StringBuffer buffer = new StringBuffer();
+            buffer.append(htmlId).append("\t").append(html);
+            writer.println(buffer);
+        }
+        try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(doc_id, StandardOpenOption.APPEND))) {
+            StringBuffer buffer = new StringBuffer();
+            buffer.append(htmlId).append("\t").append(link).append("\t").append(pageSize).append("\t").append(docRawPath);
+            writer.println(buffer);
+        }
+        Collector.linkEntries.offer(new Link(htmlId, link, pageSize, docRawPath));
     }
 
 }

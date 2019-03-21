@@ -1,5 +1,6 @@
 package com.dbc.exert.model;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -10,15 +11,14 @@ public class IDProvider {
     }
 
     private static AtomicInteger doc_raw = new AtomicInteger(1);
-    private static AtomicLong web_id = new AtomicLong(1);
     private static AtomicLong word_id = new AtomicLong(1);
 
     public static long newWordId() {
         return word_id.getAndIncrement();
     }
 
-    public static long newWebId() {
-        return web_id.getAndIncrement();
+    public static synchronized String generateId() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     public static void docIdIncrease() {
@@ -28,5 +28,6 @@ public class IDProvider {
     public static int docId() {
         return doc_raw.get();
     }
+
 
 }

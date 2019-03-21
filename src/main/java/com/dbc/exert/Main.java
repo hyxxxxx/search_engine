@@ -1,7 +1,10 @@
 package com.dbc.exert;
 
+import com.dbc.exert.analyze.LocalAnalyzer;
 import com.dbc.exert.collect.Collector;
+import com.dbc.exert.collect.LocalCollector;
 import com.dbc.exert.model.IDProvider;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,24 +14,25 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class Main {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         ExecutorService service = Executors.newFixedThreadPool(10);
 
         Collector.links.offer("https://news.sina.com.cn/china/");
 
-//        Collector collector = new LocalCollector();
-//        Analyzer analyzer = new LocalAnalyzer();
 
-//        service.submit(collector);
-//        service.submit(analyzer);
+        service.submit(new LocalCollector());
+        TimeUnit.SECONDS.sleep(2);
+        service.submit(new LocalAnalyzer());
 //        service.submit(new Indexer());
         service.submit((Runnable) () -> {
             while (true) {
                 int docId = IDProvider.docId();
+                log.info("doc文件ID -> {}", docId);
                 String root = ConfigUtil.getValueStr("root");
                 Path doc_raw = Paths.get(root + "doc_raw_" + docId + ".bin");
                 if (Files.exists(doc_raw)) {
