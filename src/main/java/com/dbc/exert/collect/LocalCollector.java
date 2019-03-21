@@ -1,6 +1,7 @@
 package com.dbc.exert.collect;
 
 import com.dbc.exert.ConfigUtil;
+import com.dbc.exert.FilePath;
 import com.dbc.exert.model.IDProvider;
 import com.dbc.exert.model.Link;
 import com.dbc.exert.net.HttpHelper;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.MessageFormat;
 
 @Slf4j
 public class LocalCollector extends Collector {
@@ -72,10 +74,9 @@ public class LocalCollector extends Collector {
         }
         String htmlId = IDProvider.generateId();
         int docId = IDProvider.docId();
-        String root = ConfigUtil.getValueStr("root");
-        String docRawPath = root + "doc_raw_" + docId + ".bin";
+        String docRawPath = MessageFormat.format(FilePath.DOC_RAW_PATH, docId);
         Path doc_raw = Paths.get(docRawPath);
-        Path doc_id = Paths.get(root + "doc_id.bin");
+        Path doc_id = Paths.get(FilePath.DOC_ID_PATH);
         int pageSize = html.getBytes(Charset.defaultCharset()).length;
         if (!Files.exists(doc_raw)) {
             Files.createFile(doc_raw);

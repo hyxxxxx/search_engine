@@ -1,6 +1,8 @@
 package com.dbc.exert.analyze;
 
+import com.dbc.exert.FilePath;
 import com.dbc.exert.collect.Collector;
+import com.dbc.exert.model.IDProvider;
 import com.dbc.exert.model.Link;
 import com.hankcs.hanlp.seg.common.Term;
 import com.hankcs.hanlp.tokenizer.SpeedTokenizer;
@@ -8,7 +10,12 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,12 +23,14 @@ import java.util.regex.Pattern;
 
 public class LocalAnalyzer extends Analyzer {
 
+    private String linkId;
+
     @Override
     String readHtml() throws IOException {
 
         Link link = Collector.linkEntries.poll();
         String fileName = link.getFileName();
-        String linkId = link.getId();
+        linkId = link.getId();
         int webSize = link.getWebSize();
         try (RandomAccessFile raf = new RandomAccessFile(new File(fileName), "r")) {
             raf.seek(0);
@@ -61,14 +70,41 @@ public class LocalAnalyzer extends Analyzer {
     }
 
     @Override
-    void createIndex(String context) {
+    void createIndex(String context) throws IOException {
         if (StringUtils.isEmpty(context)) {
             return;
         }
         List<Term> segment = SpeedTokenizer.segment(context);
-        for (Term term : segment) {
-            System.out.println(term.word);
+
+        Path tmp_index = Paths.get(FilePath.TMP_INDEX_PATH);
+        Path term_id = Paths.get(FilePath.TERM_ID_PATH);
+        if (!Files.exists(tmp_index)) {
+            Files.createFile(tmp_index);
         }
+        if (!Files.exists(term_id)) {
+            Files.createFile(term_id);
+        }
+        try (PrintWriter tmpWriter = new PrintWriter(Files.newBufferedWriter(tmp_index, StandardOpenOption.APPEND));
+             PrintWriter termWriter = new PrintWriter(Files.newBufferedWriter(term_id, StandardOpenOption.APPEND))) {
+            for (Term term : segment) {
+                long wordId;
+                if (Analyzer.wordMap.containsKey(term.word)) {
+                    wordId = Analyzer.wordMap.get(term.word);
+                } else {
+                    wordId = IDProvider.newWordId();
+                    Analyzer.wordMap.put(term.word, wordId);
+                }
+                //将单词ID与对应网页链接写入文件
+                StringBuffer buffer = new StringBuffer();
+                buffer.append(wordId).append("\t").append(linkId);
+                tmpWriter.println(buffer);
+            }
+            //将单词写入文件
+            for (String word : Analyzer.wordMap.keySet()) {
+                termWriter.println(word + "\t" + Analyzer.wordMap.get(word));
+            }
+        }
+
     }
 
     @Override
