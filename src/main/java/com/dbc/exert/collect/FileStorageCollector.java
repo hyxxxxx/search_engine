@@ -22,7 +22,7 @@ import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
 
 @Slf4j
-public class LocalCollector extends Collector {
+public class FileStorageCollector extends Collector {
 
     private String link;
 

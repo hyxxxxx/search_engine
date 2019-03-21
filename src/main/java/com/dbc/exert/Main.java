@@ -1,8 +1,8 @@
 package com.dbc.exert;
 
-import com.dbc.exert.analyze.LocalAnalyzer;
+import com.dbc.exert.analyze.FileStorageAnalyzer;
 import com.dbc.exert.collect.Collector;
-import com.dbc.exert.collect.LocalCollector;
+import com.dbc.exert.collect.FileStorageCollector;
 import com.dbc.exert.model.IDProvider;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,9 +25,9 @@ public class Main {
         Collector.links.offer("https://news.sina.com.cn/china/");
 
 
-        service.submit(new LocalCollector());
+        service.submit(new FileStorageCollector());
         TimeUnit.SECONDS.sleep(2);
-        service.submit(new LocalAnalyzer());
+        service.submit(new FileStorageAnalyzer());
 //        service.submit(new Indexer());
         service.submit((Runnable) () -> {
             while (true) {
