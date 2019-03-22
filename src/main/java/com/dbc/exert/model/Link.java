@@ -9,6 +9,7 @@ public class Link {
     private String link;
     private int webSize;
     private String fileName;
+    private String content;
 
     public Link() {
     }

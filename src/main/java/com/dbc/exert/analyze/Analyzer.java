@@ -6,6 +6,9 @@ import java.util.Map;
 
 public abstract class Analyzer implements Runnable {
 
+    /**
+     * 存储单词与单词编号
+     */
     public static final Map<String, Long> wordMap = new HashMap<>(512);
 
     abstract String readHtml() throws IOException;

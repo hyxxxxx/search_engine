@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,11 +35,11 @@ public class FileStorageAnalyzer extends Analyzer {
         int webSize = link.getWebSize();
         try (RandomAccessFile raf = new RandomAccessFile(new File(fileName), "r")) {
             raf.seek(0);
-            byte[] head = new byte[linkId.length()];
+            String line;
             do {
-                raf.read(head);
-            } while (!Arrays.equals(linkId.getBytes(), head));
-            raf.skipBytes(1);
+                line = raf.readLine();
+            } while (!line.startsWith(linkId));
+            raf.seek(raf.getFilePointer() - line.length() + linkId.length());
             byte[] body = new byte[webSize];
             raf.read(body);
             return new String(body, 0, webSize);
@@ -74,7 +75,7 @@ public class FileStorageAnalyzer extends Analyzer {
         if (StringUtils.isEmpty(context)) {
             return;
         }
-        List<Term> segment = SpeedTokenizer.segment(context);
+        List<Term> segment = SpeedTokenizer.segment(context);   //分词
 
         Path tmp_index = Paths.get(FilePath.TMP_INDEX_PATH);
         Path term_id = Paths.get(FilePath.TERM_ID_PATH);
@@ -84,8 +85,8 @@ public class FileStorageAnalyzer extends Analyzer {
         if (!Files.exists(term_id)) {
             Files.createFile(term_id);
         }
-        try (PrintWriter tmpWriter = new PrintWriter(Files.newBufferedWriter(tmp_index, StandardOpenOption.APPEND));
-             PrintWriter termWriter = new PrintWriter(Files.newBufferedWriter(term_id, StandardOpenOption.APPEND))) {
+        //持久化
+        try (PrintWriter tmpWriter = new PrintWriter(Files.newBufferedWriter(tmp_index, StandardOpenOption.APPEND))) {
             for (Term term : segment) {
                 long wordId;
                 if (Analyzer.wordMap.containsKey(term.word)) {
@@ -99,6 +100,8 @@ public class FileStorageAnalyzer extends Analyzer {
                 buffer.append(wordId).append("\t").append(linkId);
                 tmpWriter.println(buffer);
             }
+        }
+        try (PrintWriter termWriter = new PrintWriter(Files.newBufferedWriter(term_id, StandardOpenOption.APPEND))) {
             //将单词写入文件
             for (String word : Analyzer.wordMap.keySet()) {
                 termWriter.println(word + "\t" + Analyzer.wordMap.get(word));

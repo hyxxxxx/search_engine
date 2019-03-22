@@ -1,6 +1,5 @@
 package com.dbc.exert.collect;
 
-import com.dbc.exert.ConfigUtil;
 import com.dbc.exert.FilePath;
 import com.dbc.exert.model.IDProvider;
 import com.dbc.exert.model.Link;
@@ -78,6 +77,7 @@ public class FileStorageCollector extends Collector {
         Path doc_raw = Paths.get(docRawPath);
         Path doc_id = Paths.get(FilePath.DOC_ID_PATH);
         int pageSize = html.getBytes(Charset.defaultCharset()).length;
+
         if (!Files.exists(doc_raw)) {
             Files.createFile(doc_raw);
         }

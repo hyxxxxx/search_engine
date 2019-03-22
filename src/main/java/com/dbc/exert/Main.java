@@ -18,17 +18,17 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
 
         ExecutorService service = Executors.newFixedThreadPool(10);
 
         Collector.links.offer("https://news.sina.com.cn/china/");
 
+        if (!Files.exists(Paths.get(FilePath.ROOT))) {
+            Files.createDirectory(Paths.get(FilePath.ROOT));
+        }
 
         service.submit(new FileStorageCollector());
-        TimeUnit.SECONDS.sleep(2);
-        service.submit(new FileStorageAnalyzer());
-//        service.submit(new Indexer());
         service.submit((Runnable) () -> {
             while (true) {
                 int docId = IDProvider.docId();
@@ -52,8 +52,11 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-
         });
+        TimeUnit.SECONDS.sleep(2);
+        service.submit(new FileStorageAnalyzer());
+
+
     }
 
 

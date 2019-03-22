@@ -6,6 +6,7 @@ import com.google.common.hash.Funnels;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
