@@ -1,6 +1,7 @@
 package com.dbc.exert;
 
 import com.dbc.exert.model.Trie;
+import com.dbc.exert.stock.BalanceExecutor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
